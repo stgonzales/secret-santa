@@ -8,7 +8,8 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "postinstall": "bun drizzle-kit migrate",
+    "preinstall": "",
+    "postinstall": "bunx drizzle-kit migrate",
     "sync": "bun src/db/sync.ts"
   },
   "dependencies": {
