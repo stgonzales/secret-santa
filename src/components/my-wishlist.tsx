@@ -8,14 +8,12 @@ import { Badge } from "@/components/ui/badge"
 import { AddWishlistItemDialog } from "@/components/add-wishlist-item-dialog"
 import { EditWishlistItemDialog } from "@/components/edit-wishlist-item-dialog"
 import { addWishlistItemAction, deleteWishlistItemAction, editWishlistItemAction, fetchWishlistAction } from "@/actions"
-import { UserType, WishlistItemType } from "@/db/schema"
+import { ChildWishlistItemType, UserType, WishlistItemType } from "@/db/schema"
 import { AddWishlistItemType } from "@/types"
 
 export function MyWishlist({ userId }: { userId: UserType["id"] }) {
   const [items, setItems] = useState<WishlistItemType[]>([])
-  const [isPending, startTransition] = useTransition()
-  const [isAddOpen, setIsAddOpen] = useState(false)
-  const [editingItem, setEditingItem] = useState<WishlistItemType | null>(null)
+  const [, startTransition] = useTransition()
 
   const handleAddItem = async (item: AddWishlistItemType) => {
     const [newItem] = await addWishlistItemAction({
@@ -29,23 +27,19 @@ export function MyWishlist({ userId }: { userId: UserType["id"] }) {
       ...v,
       newItem,
     ])
-    setIsAddOpen(false)
   }
 
-  const handleEditItem = async ({ id, createdAt, updatedAt, ...rest}: WishlistItemType) => {
+  const handleEditItem = async (editedItem: WishlistItemType | ChildWishlistItemType) => {
     const [ item ] = await editWishlistItemAction({
       data: {
-        ...rest,
+        ...editedItem,
         userId,
       },
-      itemId: id,
     })
 
     setItems(v => v.map(i =>
       i.id === item.id ? item : i
     ))
-
-    setIsAddOpen(false)
   }
 
   const handleDeleteItem = async (itemId: string) => {

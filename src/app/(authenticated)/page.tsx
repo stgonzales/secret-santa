@@ -39,7 +39,7 @@ export default async function SecretSantaPage() {
           {/* Left Column */}
           <div className="space-y-8">
             {env.FEAT_WISHLIST && <MyWishlist userId={session.user.id}/>}
-            {env.FEAT_CHILDRENS && <ChildrenSection />}
+            {env.FEAT_CHILDRENS && <ChildrenSection userId={session.user.id}/>}
           </div>
 
           {/* Right Column */}

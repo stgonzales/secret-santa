@@ -22,13 +22,14 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { AddWishlistItemSchema } from "@/schemas"
 import { Plus } from "lucide-react"
 import { useState } from "react"
-import { DialogClose, DialogProps } from "@radix-ui/react-dialog"
+import { ChildrenType } from "@/db/schema"
 
 type AddWishlistItemDialogProps = {
-  onAdd: (item: AddWishlistItemType) => void
+  onAdd: (item: AddWishlistItemType, childId?: string) => void
+  child?: ChildrenType
 }
 
-export function AddWishlistItemDialog({ onAdd}: AddWishlistItemDialogProps) {
+export function AddWishlistItemDialog({ onAdd, child }: AddWishlistItemDialogProps) {
   const [open, setOpen] = useState(false)
   const { register, handleSubmit, reset, control } = useForm({
     resolver: zodResolver(AddWishlistItemSchema),
@@ -40,7 +41,7 @@ export function AddWishlistItemDialog({ onAdd}: AddWishlistItemDialogProps) {
   }
 
   const handler = async (data: AddWishlistItemType) => {
-    onAdd(data)
+    onAdd(data, child?.id)
     handleClose(false)
   }
 
@@ -55,8 +56,8 @@ export function AddWishlistItemDialog({ onAdd}: AddWishlistItemDialogProps) {
       <DialogContent className="sm:max-w-[500px]">
         <form onSubmit={handleSubmit(handler)}>
           <DialogHeader>
-            <DialogTitle>Edit Wishlist Item</DialogTitle>
-            <DialogDescription>Update the details of your wishlist item.</DialogDescription>
+            <DialogTitle>Add Wishlist Item</DialogTitle>
+            <DialogDescription>{child ? `Add a new item to ${child.name}'s wishlist for Secret Santa.` : "Add a new item to your wishlist for Secret Santa."}</DialogDescription>
           </DialogHeader>
           <div className="grid gap-4 py-4">
             <div className="grid gap-2">

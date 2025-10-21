@@ -73,6 +73,7 @@ export const children = sqliteTable("children", {
   id: defaultId,
   userId: text("user_id").references(() => user.id).notNull(),
   name: text("name").notNull(),
+  age: integer().notNull().default(0),
   createdAt: integer("created_at", { mode: "timestamp" }).$defaultFn(
     () => /* @__PURE__ */ new Date(),
   ),
@@ -84,7 +85,6 @@ export const children = sqliteTable("children", {
 export const wishlist = sqliteTable("wishlist", {
   id: defaultId,
   userId: text("user_id").references(() => user.id).notNull(),
-  childId: text("child_id").references(() => children.id),
   name: text("name").notNull(),
   url: text("url"),
   description: text("description"),
@@ -109,10 +109,27 @@ export const draws = sqliteTable("draws", {
   ),
 });
 
+export const childWishlist = sqliteTable("child_wishlist", {
+  id: defaultId,
+  childId: text("child_id").references(() => children.id).notNull(),
+  name: text("name").notNull(),
+  url: text("url"),
+  description: text("description"),
+  priority: text("priority", { enum: ["low", "medium", "high"]}).$defaultFn(() => "low").notNull(),
+  createdAt: integer("created_at", { mode: "timestamp" }).$defaultFn(
+    () => /* @__PURE__ */ new Date(),
+  ),
+  updatedAt: integer("updated_at", { mode: "timestamp" }).$defaultFn(
+    () => /* @__PURE__ */ new Date(),
+  ),
+});
+
 export type UserType = typeof user.$inferSelect
 export type NewUserType = typeof user.$inferInsert
 export type SessionType = typeof session.$inferSelect
 
+export type ChildWishlistItemType = typeof childWishlist.$inferSelect
+export type NewChildWishlistItemType = typeof childWishlist.$inferInsert
 export type ChildrenType = typeof children.$inferSelect
 export type NewChildrenType = typeof children.$inferInsert
 export type WishlistItemType = typeof wishlist.$inferSelect

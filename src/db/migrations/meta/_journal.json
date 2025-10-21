@@ -36,6 +36,34 @@
       "when": 1760720347546,
       "tag": "0004_supreme_carnage",
       "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "6",
+      "when": 1760976893633,
+      "tag": "0005_classy_anthem",
+      "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "6",
+      "when": 1761064570334,
+      "tag": "0006_oval_boomerang",
+      "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "6",
+      "when": 1761064591729,
+      "tag": "0007_grey_malcolm_colcord",
+      "breakpoints": true
+    },
+    {
+      "idx": 8,
+      "version": "6",
+      "when": 1761064929857,
+      "tag": "0008_spotty_excalibur",
+      "breakpoints": true
     }
   ]
 }

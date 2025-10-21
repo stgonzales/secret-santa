@@ -11,38 +11,46 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
+  DialogTrigger,
 } from "@/components/ui/dialog"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
+import { useForm } from "react-hook-form"
+import { NewChildrenSchema } from "@/schemas"
+import { zodResolver } from "@hookform/resolvers/zod"
+import { NewChildrenType } from "@/types"
+import { Plus } from "lucide-react"
 
-interface AddChildDialogProps {
-  open: boolean
-  onOpenChange: (open: boolean) => void
-  onAdd: (child: { name: string; age: number }) => void
+type AddChildDialogProps = {
+  onAdd: (child: NewChildrenType) => void
 }
 
-export function AddChildDialog({ open, onOpenChange, onAdd }: AddChildDialogProps) {
-  const [name, setName] = useState("")
-  const [age, setAge] = useState("")
+export function AddChildDialog({ onAdd }: AddChildDialogProps) {
+  const { handleSubmit, register, reset } = useForm({
+    resolver: zodResolver(NewChildrenSchema),
+  })
+  const [open, setOpen] = useState(false)
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault()
-    if (!name.trim() || !age) return
+  const handleClose = (value: boolean) => {
+    setOpen(value)
+    reset()
+  }
 
-    onAdd({
-      name: name.trim(),
-      age: Number.parseInt(age),
-    })
-
-    // Reset form
-    setName("")
-    setAge("")
+  const handler = (data: NewChildrenType) => {
+    onAdd(data)
+    handleClose(false)
   }
 
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
+    <Dialog open={open} onOpenChange={handleClose}>
+      <DialogTrigger asChild>
+        <Button variant="secondary">
+          <Plus className="w-4 h-4 mr-2" />
+          Add Child
+        </Button>
+      </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
-        <form onSubmit={handleSubmit}>
+        <form onSubmit={handleSubmit(handler)}>
           <DialogHeader>
             <DialogTitle>Add Child</DialogTitle>
             <DialogDescription>Add a child to manage their wishlist for Secret Santa.</DialogDescription>
@@ -51,29 +59,23 @@ export function AddChildDialog({ open, onOpenChange, onAdd }: AddChildDialogProp
             <div className="grid gap-2">
               <Label htmlFor="child-name">Name *</Label>
               <Input
-                id="child-name"
+                {...register("name")}
                 placeholder="e.g., Emma"
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-                required
               />
             </div>
             <div className="grid gap-2">
               <Label htmlFor="child-age">Age *</Label>
               <Input
-                id="child-age"
+                {...register("age")}
                 type="number"
-                min="1"
-                max="18"
+                min={0}
+                max={12}
                 placeholder="e.g., 8"
-                value={age}
-                onChange={(e) => setAge(e.target.value)}
-                required
               />
             </div>
           </div>
           <DialogFooter>
-            <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>
+            <Button type="button" variant="outline" onClick={() => setOpen(false)}>
               Cancel
             </Button>
             <Button type="submit">Add Child</Button>

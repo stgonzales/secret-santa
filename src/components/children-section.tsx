@@ -1,55 +1,24 @@
 "use client"
 
-import { useState } from "react"
+import { startTransition, useEffect, useState } from "react"
 import { Plus, Edit2, Trash2, Users, ChevronDown, ChevronRight } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { AddChildDialog } from "@/components/add-child-dialog"
 import { EditChildDialog } from "@/components/edit-child-dialog"
-import { AddChildWishlistItemDialog } from "@/components/add-child-wishlist-item-dialog"
-import { EditChildWishlistItemDialog } from "@/components/edit-child-wishlist-item-dialog"
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible"
+import { ChildrenType, ChildWishlistItemType, UserType, WishlistItemType } from "@/db/schema"
+import { getPriorityColor } from "@/utils"
+import { AddWishlistItemType, NewChildrenType } from "@/types"
+import { addChildAction, addChildWishlistItemAction, deleteChildAction, deleteChildWishlistItemAction, editChildAction, editChildWishlistItemAction, editWishlistItemAction, fetchChildrensAction, fetchChildWishListAction, fetchWishlistAction } from "@/actions"
+import { AddWishlistItemDialog } from "./add-wishlist-item-dialog"
+import { EditWishlistItemDialog } from "./edit-wishlist-item-dialog"
 
-interface WishlistItem {
-  id: string
-  name: string
-  description?: string
-  url?: string
-  priority: "low" | "medium" | "high"
-}
-
-interface Child {
-  id: string
-  name: string
-  age: number
-  wishlist: WishlistItem[]
-}
-
-export function ChildrenSection() {
-  const [children, setChildren] = useState<Child[]>([
-    {
-      id: "1",
-      name: "Emma",
-      age: 8,
-      wishlist: [
-        {
-          id: "1",
-          name: "LEGO Castle Set",
-          description: "The big one with the dragon",
-          priority: "high",
-        },
-      ],
-    },
-  ])
-  const [expandedChildren, setExpandedChildren] = useState<Set<string>>(new Set(["1"]))
-  const [isAddChildOpen, setIsAddChildOpen] = useState(false)
-  const [editingChild, setEditingChild] = useState<Child | null>(null)
-  const [addingWishlistForChild, setAddingWishlistForChild] = useState<string | null>(null)
-  const [editingWishlistItem, setEditingWishlistItem] = useState<{
-    childId: string
-    item: WishlistItem
-  } | null>(null)
+export function ChildrenSection({ userId }: { userId: UserType["id"] }) {
+  const [childrens, setChildrens] = useState<ChildrenType[]>([])
+  const [childrensWishlist, setChildrensWishlsit] = useState<Record<string, ChildWishlistItemType[]>>({})
+  const [expandedChildren, setExpandedChildren] = useState<Set<string>>(new Set())
 
   const toggleChild = (childId: string) => {
     const newExpanded = new Set(expandedChildren)
@@ -61,76 +30,99 @@ export function ChildrenSection() {
     setExpandedChildren(newExpanded)
   }
 
-  const handleAddChild = (child: Omit<Child, "id" | "wishlist">) => {
-    const newChild = { ...child, id: Date.now().toString(), wishlist: [] }
-    setChildren([...children, newChild])
+  const handleAddChild = async (child: NewChildrenType) => {
+    const [ newChild ] = await addChildAction({
+      data: {
+        ...child,
+        userId,
+      },
+    })
+
+    setChildrens((v) => [
+      ...v,
+      newChild,
+    ])
+
     setExpandedChildren(new Set([...expandedChildren, newChild.id]))
-    setIsAddChildOpen(false)
   }
 
-  const handleEditChild = (updatedChild: Child) => {
-    setChildren(children.map((child) => (child.id === updatedChild.id ? updatedChild : child)))
-    setEditingChild(null)
+  const handleEditChild = async ({ id, createdAt, updatedAt, ...rest}: ChildrenType) => {
+    const [ updatedChild ] = await editChildAction({
+      data: {
+        ...rest,
+        userId
+      },
+      childId: id,
+    })
+
+    setChildrens(childrens.map((child) => (child.id === updatedChild.id ? updatedChild : child)))
   }
 
-  const handleDeleteChild = (id: string) => {
-    setChildren(children.filter((child) => child.id !== id))
+  const handleDeleteChild = async (childId: string) => {
+    await deleteChildAction({ childId, userId })
     const newExpanded = new Set(expandedChildren)
-    newExpanded.delete(id)
+    newExpanded.delete(childId)
     setExpandedChildren(newExpanded)
+    setChildrens(childrens.filter(c => c.id !== childId))
   }
 
-  const handleAddWishlistItem = (childId: string, item: Omit<WishlistItem, "id">) => {
-    setChildren(
-      children.map((child) =>
-        child.id === childId
-          ? {
-              ...child,
-              wishlist: [...child.wishlist, { ...item, id: Date.now().toString() }],
-            }
-          : child,
-      ),
-    )
-    setAddingWishlistForChild(null)
-  }
+  const handleAddChildWishlistItem = async (item: AddWishlistItemType, childId?: string) => {
+    if(childId) {
+      const [newItem] = await addChildWishlistItemAction({
+        data: {
+          ...item,
+          childId,
+        },
+      })
 
-  const handleEditWishlistItem = (childId: string, updatedItem: WishlistItem) => {
-    setChildren(
-      children.map((child) =>
-        child.id === childId
-          ? {
-              ...child,
-              wishlist: child.wishlist.map((item) => (item.id === updatedItem.id ? updatedItem : item)),
-            }
-          : child,
-      ),
-    )
-    setEditingWishlistItem(null)
-  }
-
-  const handleDeleteWishlistItem = (childId: string, itemId: string) => {
-    setChildren(
-      children.map((child) =>
-        child.id === childId
-          ? {
-              ...child,
-              wishlist: child.wishlist.filter((item) => item.id !== itemId),
-            }
-          : child,
-      ),
-    )
-  }
-
-  const getPriorityColor = (priority: string) => {
-    switch (priority) {
-      case "high":
-        return "bg-primary/10 text-primary border-primary/20"
-      case "medium":
-        return "bg-secondary/10 text-secondary border-secondary/20"
-      default:
-        return "bg-muted text-muted-foreground border-border"
+      setChildrensWishlsit({
+        ...childrensWishlist,
+        ...childId && { [childId]: [...(childrensWishlist[newItem.id] ?? []), newItem] },
+      })
     }
   }
+
+  const handleEditChildWishlistItem = async (editedItem: WishlistItemType | ChildWishlistItemType, childId: string | null) => {
+    if(childId) {
+      const [ item ] = await editChildWishlistItemAction({
+        data: {
+          ...editedItem,
+          childId,
+        },
+      })
+
+      if(childId) {
+        const childWishlistItemIndex = childrensWishlist[childId].findIndex(i => i.id === childId)
+        const newList = [ ...childrensWishlist[childId]]
+        newList[childWishlistItemIndex] = item
+
+        setChildrensWishlsit({
+          ...childrensWishlist,
+          [childId]: newList,
+        })
+      }
+    }
+  }
+
+  const handleDeleteChildWishlistItem = async (childId: string, itemId: string) => {
+    await deleteChildWishlistItemAction({ itemId, childId })
+
+    const updatedList = childrensWishlist
+
+    delete updatedList[childId]
+
+    setChildrensWishlsit(updatedList)
+  }
+
+  useEffect(() => {
+    startTransition(async () => {
+      const childrens = await fetchChildrensAction({ userId })
+      setChildrens(childrens)
+
+      const childWishlist = await fetchChildWishListAction({ userId })
+      setChildrensWishlsit(childWishlist)
+    })
+  }, [])
 
   return (
     <>
@@ -144,14 +136,11 @@ export function ChildrenSection() {
               </CardTitle>
               <CardDescription>Manage wishlists for your children</CardDescription>
             </div>
-            <Button onClick={() => setIsAddChildOpen(true)} size="sm" variant="secondary">
-              <Plus className="w-4 h-4 mr-2" />
-              Add Child
-            </Button>
+            <AddChildDialog onAdd={handleAddChild} />
           </div>
         </CardHeader>
         <CardContent>
-          {children.length === 0 ? (
+          {childrens.length === 0 ? (
             <div className="text-center py-12">
               <div className="flex justify-center mb-4">
                 <div className="w-16 h-16 rounded-full bg-muted flex items-center justify-center">
@@ -159,14 +148,11 @@ export function ChildrenSection() {
                 </div>
               </div>
               <p className="text-muted-foreground mb-4">No children added yet</p>
-              <Button onClick={() => setIsAddChildOpen(true)} variant="outline">
-                <Plus className="w-4 h-4 mr-2" />
-                Add Your First Child
-              </Button>
+              {/* <AddChildDialog onAdd={handleAddChild} /> */}
             </div>
           ) : (
             <div className="space-y-3">
-              {children.map((child) => (
+              {childrens.map((child) => (
                 <Collapsible
                   key={child.id}
                   open={expandedChildren.has(child.id)}
@@ -188,21 +174,16 @@ export function ChildrenSection() {
                                 Age {child.age}
                               </Badge>
                               <Badge variant="outline" className="text-xs">
-                                {child.wishlist.length} items
+                                {childrensWishlist[child.id] ? childrensWishlist[child.id].length : 0} items
                               </Badge>
                             </div>
                           </div>
                         </CollapsibleTrigger>
                         <div className="flex gap-1">
-                          <Button
-                            variant="ghost"
-                            size="icon"
-                            onClick={() => setEditingChild(child)}
-                            className="h-8 w-8"
-                          >
-                            <Edit2 className="w-4 h-4" />
-                            <span className="sr-only">Edit child</span>
-                          </Button>
+                          <EditChildDialog
+                            child={child}
+                            onEdit={handleEditChild}
+                          />
                           <Button
                             variant="ghost"
                             size="icon"
@@ -220,16 +201,16 @@ export function ChildrenSection() {
                       <div className="px-4 pb-4 pt-0 border-t border-border mt-4">
                         <div className="flex items-center justify-between mb-3 mt-4">
                           <h5 className="text-sm font-medium text-muted-foreground">Wishlist</h5>
-                          <Button size="sm" variant="outline" onClick={() => setAddingWishlistForChild(child.id)}>
-                            <Plus className="w-3 h-3 mr-1" />
-                            Add Item
-                          </Button>
+                          <AddWishlistItemDialog
+                            onAdd={handleAddChildWishlistItem}
+                            child={child}
+                          />
                         </div>
-                        {child.wishlist.length === 0 ? (
+                        {childrensWishlist[child.id] && childrensWishlist[child.id].length === 0 ? (
                           <p className="text-sm text-muted-foreground text-center py-4">No wishlist items yet</p>
                         ) : (
                           <div className="space-y-2">
-                            {child.wishlist.map((item) => (
+                            {childrensWishlist[child.id] && childrensWishlist[child.id].map((item) => (
                               <div key={item.id} className="p-3 rounded-md bg-accent/50 border border-border">
                                 <div className="flex items-start justify-between gap-4">
                                   <div className="flex-1 min-w-0">
@@ -254,19 +235,15 @@ export function ChildrenSection() {
                                     )}
                                   </div>
                                   <div className="flex gap-1">
+                                    <EditWishlistItemDialog
+                                      item={item}
+                                      child={child}
+                                      onEdit={handleEditChildWishlistItem}
+                                    />
                                     <Button
                                       variant="ghost"
                                       size="icon"
-                                      onClick={() => setEditingWishlistItem({ childId: child.id, item })}
-                                      className="h-7 w-7"
-                                    >
-                                      <Edit2 className="w-3 h-3" />
-                                      <span className="sr-only">Edit item</span>
-                                    </Button>
-                                    <Button
-                                      variant="ghost"
-                                      size="icon"
-                                      onClick={() => handleDeleteWishlistItem(child.id, item.id)}
+                                      onClick={() => handleDeleteChildWishlistItem(child.id, item.id)}
                                       className="h-7 w-7 text-destructive hover:text-destructive"
                                     >
                                       <Trash2 className="w-3 h-3" />
@@ -288,32 +265,6 @@ export function ChildrenSection() {
         </CardContent>
       </Card>
 
-      <AddChildDialog open={isAddChildOpen} onOpenChange={setIsAddChildOpen} onAdd={handleAddChild} />
-      {editingChild && (
-        <EditChildDialog
-          open={!!editingChild}
-          onOpenChange={(open) => !open && setEditingChild(null)}
-          child={editingChild}
-          onEdit={handleEditChild}
-        />
-      )}
-      {addingWishlistForChild && (
-        <AddChildWishlistItemDialog
-          open={!!addingWishlistForChild}
-          onOpenChange={(open) => !open && setAddingWishlistForChild(null)}
-          childName={children.find((c) => c.id === addingWishlistForChild)?.name || ""}
-          onAdd={(item) => handleAddWishlistItem(addingWishlistForChild, item)}
-        />
-      )}
-      {editingWishlistItem && (
-        <EditChildWishlistItemDialog
-          open={!!editingWishlistItem}
-          onOpenChange={(open) => !open && setEditingWishlistItem(null)}
-          childName={children.find((c) => c.id === editingWishlistItem.childId)?.name || ""}
-          item={editingWishlistItem.item}
-          onEdit={(item) => handleEditWishlistItem(editingWishlistItem.childId, item)}
-        />
-      )}
     </>
   )
 }

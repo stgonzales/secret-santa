@@ -1,0 +1,1 @@
+ALTER TABLE `children` ADD `age` integer DEFAULT 0 NOT NULL;

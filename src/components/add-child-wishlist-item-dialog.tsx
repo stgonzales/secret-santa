@@ -16,47 +16,37 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { AddWishlistItemSchema } from "@/schemas"
+import { AddWishlistItemType } from "@/types"
+import { zodResolver } from "@hookform/resolvers/zod"
+import { url } from "inspector"
+import { setPriority } from "os"
+import { useForm } from "react-hook-form"
 
 interface AddChildWishlistItemDialogProps {
-  open: boolean
-  onOpenChange: (open: boolean) => void
-  childName: string
-  onAdd: (item: {
-    name: string
-    description?: string
-    url?: string
-    priority: "low" | "medium" | "high"
-  }) => void
+  onAdd: (item: AddWishlistItemType, childId?: string) => void
 }
 
-export function AddChildWishlistItemDialog({ open, onOpenChange, childName, onAdd }: AddChildWishlistItemDialogProps) {
-  const [name, setName] = useState("")
-  const [description, setDescription] = useState("")
-  const [url, setUrl] = useState("")
-  const [priority, setPriority] = useState<"low" | "medium" | "high">("medium")
+export function AddChildWishlistItemDialog({ childId, userId, onAdd }: AddChildWishlistItemDialogProps) {
+  const [open, setOpen] = useState(false)
+  const { register, handleSubmit, reset, control } = useForm({
+    resolver: zodResolver(AddWishlistItemSchema),
+  })
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault()
-    if (!name.trim()) return
+  const handleClose = (state: boolean) => {
+    reset()
+    setOpen(state)
+  }
 
-    onAdd({
-      name: name.trim(),
-      description: description.trim() || undefined,
-      url: url.trim() || undefined,
-      priority,
-    })
-
-    // Reset form
-    setName("")
-    setDescription("")
-    setUrl("")
-    setPriority("medium")
+  const handler = async (data: AddWishlistItemType) => {
+    onAdd(data)
+    handleClose(false)
   }
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-[500px]">
-        <form onSubmit={handleSubmit}>
+        <form onSubmit={handleSubmit(handler)}>
           <DialogHeader>
             <DialogTitle>Add Item for {childName}</DialogTitle>
             <DialogDescription>Add a new item to {childName}'s wishlist for Secret Santa.</DialogDescription>
