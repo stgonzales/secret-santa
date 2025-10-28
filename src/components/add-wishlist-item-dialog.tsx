@@ -90,7 +90,7 @@ export function AddWishlistItemDialog({ onAdd, child }: AddWishlistItemDialogPro
                 control={control}
                 defaultValue="low"
                 render={({ field }) => (
-                  <Select {...field}> 
+                  <Select onValueChange={field.onChange} {...field}> 
                     <SelectTrigger id="priority">
                       <SelectValue />
                     </SelectTrigger>
