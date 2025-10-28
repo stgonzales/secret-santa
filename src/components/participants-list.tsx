@@ -8,15 +8,19 @@ import { UserX } from "lucide-react";
 import { getCookie } from "@/utils";
 
 export function ParticipantsList() {
-    const [users, setUsers] = useState<UserType[]>([])
+    const [users, setUsers] = useState<{
+        id: string;
+        name: string;
+    }[]>([])
     const [excludedUsers, setExcludedUsers] = useState<Record<string, UserType["id"][]>>({})
     const [recipients, setRecipients] = useState<{ id: string; name: string; }[]>([])
 
     const getExcludedNames = (id: string) => {
+        console.log(id)
         const list = excludedUsers ? excludedUsers[id] : []
 
-        if(list[0]) {
-            return users.map(i => list.includes(i.id) ? i.name.split(" ")[0] : "").filter(Boolean).join(", ")
+        if(list.length >= 1) {
+            return users.map(u => list.includes(u.id) ? u.name.split(" ")[0] : "").filter(Boolean).join(", ")
         }
 
         return;
@@ -24,7 +28,7 @@ export function ParticipantsList() {
 
     useEffect(() => {
         startTransition(async () => {
-            const result = await fetchUsersAction()
+            const result = await availableRecipientNames()
             setUsers(result)
 
             const list = getCookie("excludedUsersList");
