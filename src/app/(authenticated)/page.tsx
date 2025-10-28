@@ -30,7 +30,7 @@ export default async function SecretSantaPage() {
                 <Gift className="w-5 h-5 sm:w-6 sm:h-6 text-primary" />
               </div>
               <div className="text-center sm:text-left">
-                <h1 className="text-xl sm:text-2xl font-bold text-balance">Secret Santa 2024</h1>
+                <h1 className="text-xl sm:text-2xl font-bold text-balance">Secret Santa 2025</h1>
                 <p className="text-xs sm:text-sm text-muted-foreground">Manage your holiday gift exchange</p>
               </div>
             </div>
