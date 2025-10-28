@@ -8,7 +8,7 @@ import { Badge } from "@/components/ui/badge"
 import { AddWishlistItemDialog } from "@/components/add-wishlist-item-dialog"
 import { EditWishlistItemDialog } from "@/components/edit-wishlist-item-dialog"
 import { addWishlistItemAction, deleteWishlistItemAction, editWishlistItemAction, fetchWishlistAction } from "@/actions"
-import { ChildWishlistItemType, UserType, WishlistItemType } from "@/db/schema"
+import { UserType, WishlistItemType } from "@/db/schema"
 import { AddWishlistItemType } from "@/types"
 
 export function MyWishlist({ userId }: { userId: UserType["id"] }) {
@@ -19,7 +19,7 @@ export function MyWishlist({ userId }: { userId: UserType["id"] }) {
     const [newItem] = await addWishlistItemAction({
       data: {
         ...item,
-        userId,
+        receiverId: userId,
       },
     })
 
@@ -29,11 +29,11 @@ export function MyWishlist({ userId }: { userId: UserType["id"] }) {
     ])
   }
 
-  const handleEditItem = async (editedItem: WishlistItemType | ChildWishlistItemType) => {
+  const handleEditItem = async (editedItem: WishlistItemType) => {
     const [ item ] = await editWishlistItemAction({
       data: {
         ...editedItem,
-        userId,
+        receiverId: userId,
       },
     })
 
@@ -44,7 +44,7 @@ export function MyWishlist({ userId }: { userId: UserType["id"] }) {
 
   const handleDeleteItem = async (itemId: string) => {
     await deleteWishlistItemAction({
-      userId,
+      receiverId: userId,
       itemId,
     })
 
@@ -64,7 +64,7 @@ export function MyWishlist({ userId }: { userId: UserType["id"] }) {
 
   useEffect(() => {
     startTransition(async () => {
-      const result = await fetchWishlistAction({ userId })
+      const result = await fetchWishlistAction({ receiverId: userId })
       setItems(result)
     })
   }, [])
@@ -125,6 +125,7 @@ export function MyWishlist({ userId }: { userId: UserType["id"] }) {
                     <div className="flex gap-1">
                       <EditWishlistItemDialog
                         item={item}
+                        receiverId={userId}
                         onEdit={handleEditItem}
                       />
                       <Button

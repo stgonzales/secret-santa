@@ -17,7 +17,7 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { ChildrenType, ChildWishlistItemType, WishlistItemType } from "@/db/schema"
+import { WishlistItemType } from "@/db/schema"
 import { AddWishlistItemType } from "@/types"
 import { Controller, useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
@@ -25,12 +25,12 @@ import { AddWishlistItemSchema } from "@/schemas"
 import { Edit2 } from "lucide-react"
 
 interface EditWishlistItemDialogProps {
-  item: WishlistItemType | ChildWishlistItemType
-  child?: ChildrenType
-  onEdit: (item: WishlistItemType | ChildWishlistItemType, childId: string | null) => void
+  item: WishlistItemType
+  receiverId: string;
+  onEdit: (item: WishlistItemType, receiverId: string) => void
 }
 
-export function EditWishlistItemDialog({ item, onEdit, child }: EditWishlistItemDialogProps) {
+export function EditWishlistItemDialog({ item, receiverId, onEdit }: EditWishlistItemDialogProps) {
   const [open, setOpen] = useState(false)
   const { register, handleSubmit, control, reset } = useForm({
     resolver: zodResolver(AddWishlistItemSchema),
@@ -41,25 +41,14 @@ export function EditWishlistItemDialog({ item, onEdit, child }: EditWishlistItem
   })
 
   const handler = (data: AddWishlistItemType) => {
-    if(isChildWishlistItemType(item)) {
-        onEdit({
-        ...item,
-        ...data,
-      }, child?.id || null)
-    } else {
-      onEdit({
-        ...item,
-        ...data,
-      }, null)
-    }
+    onEdit({
+      ...item,
+      ...data,
+    }, receiverId)
 
     reset()
     setOpen(false)
   }
-
- function isChildWishlistItemType(wishlistItem: WishlistItemType | ChildWishlistItemType): wishlistItem is ChildWishlistItemType {
-  return (wishlistItem as ChildWishlistItemType).childId !== undefined;
-}
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>

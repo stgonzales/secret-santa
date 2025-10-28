@@ -23,4 +23,9 @@ export const auth = betterAuth({
         },
         expiresIn: 60 * 60 * 24 * 7, // 7 day
     },
+    advanced: {
+        database: {
+            generateId: () => crypto.randomUUID(),
+        },
+    },
 });

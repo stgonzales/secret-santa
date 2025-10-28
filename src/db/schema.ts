@@ -84,7 +84,7 @@ export const children = sqliteTable("children", {
 
 export const wishlist = sqliteTable("wishlist", {
   id: defaultId,
-  userId: text("user_id").references(() => user.id).notNull(),
+  receiverId: text("user_id").notNull(),
   name: text("name").notNull(),
   url: text("url"),
   description: text("description"),
@@ -99,23 +99,8 @@ export const wishlist = sqliteTable("wishlist", {
 
 export const draws = sqliteTable("draws", {
   id: defaultId,
-  giverId: text("giver_id").references(() => user.id).notNull(),
-  receiverId: text("receiver_id").references(() => user.id).notNull(),
-  createdAt: integer("created_at", { mode: "timestamp" }).$defaultFn(
-    () => /* @__PURE__ */ new Date(),
-  ),
-  updatedAt: integer("updated_at", { mode: "timestamp" }).$defaultFn(
-    () => /* @__PURE__ */ new Date(),
-  ),
-});
-
-export const childWishlist = sqliteTable("child_wishlist", {
-  id: defaultId,
-  childId: text("child_id").references(() => children.id).notNull(),
-  name: text("name").notNull(),
-  url: text("url"),
-  description: text("description"),
-  priority: text("priority", { enum: ["low", "medium", "high"]}).$defaultFn(() => "low").notNull(),
+  giverId: text("giver_id").notNull(),
+  receiverId: text("receiver_id").notNull(),
   createdAt: integer("created_at", { mode: "timestamp" }).$defaultFn(
     () => /* @__PURE__ */ new Date(),
   ),
@@ -127,9 +112,9 @@ export const childWishlist = sqliteTable("child_wishlist", {
 export type UserType = typeof user.$inferSelect
 export type NewUserType = typeof user.$inferInsert
 export type SessionType = typeof session.$inferSelect
+export type AccountType = typeof account.$inferSelect
+export type NewAccountType = typeof account.$inferInsert
 
-export type ChildWishlistItemType = typeof childWishlist.$inferSelect
-export type NewChildWishlistItemType = typeof childWishlist.$inferInsert
 export type ChildrenType = typeof children.$inferSelect
 export type NewChildrenType = typeof children.$inferInsert
 export type WishlistItemType = typeof wishlist.$inferSelect

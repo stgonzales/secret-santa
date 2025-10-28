@@ -45,6 +45,7 @@ export const AddWishlistItemSchema = z.object({
 })
 
 export const NewChildrenSchema = z.object({
-    name: z.string().min(1),
+    firstName: z.string().min(1),
+    lastName: z.string().min(1),
     age: z.string().transform(v => Number(v)).refine(v => v >= 0 || v <= 12, "Children age should be between 0 and 12"),
 })

@@ -12,6 +12,7 @@ export const env = createEnv({
     FEAT_WISHLIST: z.string().default("false").transform(v => v === "true" ? true : false),
     FEAT_DRAWN: z.string().default("false").transform(v => v === "true"),
     FEAT_CHILDRENS: z.string().default("false").transform(v => v === "true"),
+    USER_ADMIN: z.string()
   },
   client: {},
   experimental__runtimeEnv: {}

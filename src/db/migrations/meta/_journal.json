@@ -64,6 +64,34 @@
       "when": 1761064929857,
       "tag": "0008_spotty_excalibur",
       "breakpoints": true
+    },
+    {
+      "idx": 9,
+      "version": "6",
+      "when": 1761166192612,
+      "tag": "0009_perfect_forge",
+      "breakpoints": true
+    },
+    {
+      "idx": 10,
+      "version": "6",
+      "when": 1761166277952,
+      "tag": "0010_tranquil_nuke",
+      "breakpoints": true
+    },
+    {
+      "idx": 11,
+      "version": "6",
+      "when": 1761169091144,
+      "tag": "0011_cynical_nico_minoru",
+      "breakpoints": true
+    },
+    {
+      "idx": 12,
+      "version": "6",
+      "when": 1761256371608,
+      "tag": "0012_overconfident_dexter_bennett",
+      "breakpoints": true
     }
   ]
 }

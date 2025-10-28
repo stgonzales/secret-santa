@@ -8,16 +8,16 @@ import { Badge } from "@/components/ui/badge"
 import { AddChildDialog } from "@/components/add-child-dialog"
 import { EditChildDialog } from "@/components/edit-child-dialog"
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible"
-import { ChildrenType, ChildWishlistItemType, UserType, WishlistItemType } from "@/db/schema"
+import { ChildrenType, UserType, WishlistItemType } from "@/db/schema"
 import { getPriorityColor } from "@/utils"
 import { AddWishlistItemType, NewChildrenType } from "@/types"
-import { addChildAction, addChildWishlistItemAction, deleteChildAction, deleteChildWishlistItemAction, editChildAction, editChildWishlistItemAction, editWishlistItemAction, fetchChildrensAction, fetchChildWishListAction, fetchWishlistAction } from "@/actions"
+import { addChildAction, addWishlistItemAction, deleteChildAction, deleteWishlistItemAction, editChildAction, editWishlistItemAction, fetchChildrensPerUserAction, fetchWishlistAction } from "@/actions"
 import { AddWishlistItemDialog } from "./add-wishlist-item-dialog"
 import { EditWishlistItemDialog } from "./edit-wishlist-item-dialog"
 
 export function ChildrenSection({ userId }: { userId: UserType["id"] }) {
   const [childrens, setChildrens] = useState<ChildrenType[]>([])
-  const [childrensWishlist, setChildrensWishlsit] = useState<Record<string, ChildWishlistItemType[]>>({})
+  const [childrensWishlist, setChildrensWishlsit] = useState<Record<string, WishlistItemType[]>>({})
   const [expandedChildren, setExpandedChildren] = useState<Set<string>>(new Set())
 
   const toggleChild = (childId: string) => {
@@ -50,7 +50,7 @@ export function ChildrenSection({ userId }: { userId: UserType["id"] }) {
     const [ updatedChild ] = await editChildAction({
       data: {
         ...rest,
-        userId
+        receiverId: userId
       },
       childId: id,
     })
@@ -68,10 +68,10 @@ export function ChildrenSection({ userId }: { userId: UserType["id"] }) {
 
   const handleAddChildWishlistItem = async (item: AddWishlistItemType, childId?: string) => {
     if(childId) {
-      const [newItem] = await addChildWishlistItemAction({
+      const [newItem] = await addWishlistItemAction({
         data: {
           ...item,
-          childId,
+          receiverId: childId,
         },
       })
 
@@ -82,30 +82,26 @@ export function ChildrenSection({ userId }: { userId: UserType["id"] }) {
     }
   }
 
-  const handleEditChildWishlistItem = async (editedItem: WishlistItemType | ChildWishlistItemType, childId: string | null) => {
-    if(childId) {
-      const [ item ] = await editChildWishlistItemAction({
-        data: {
-          ...editedItem,
-          childId,
-        },
-      })
+  const handleEditChildWishlistItem = async (editedItem: WishlistItemType, receiverId: string) => {
+    const [ item ] = await editWishlistItemAction({
+      data: {
+        ...editedItem,
+        receiverId,
+      },
+    })
+    
+    const childWishlistItemIndex = childrensWishlist[receiverId].findIndex(i => i.id === receiverId)
+    const newList = [ ...childrensWishlist[receiverId]]
+    newList[childWishlistItemIndex] = item
 
-      if(childId) {
-        const childWishlistItemIndex = childrensWishlist[childId].findIndex(i => i.id === childId)
-        const newList = [ ...childrensWishlist[childId]]
-        newList[childWishlistItemIndex] = item
-
-        setChildrensWishlsit({
-          ...childrensWishlist,
-          [childId]: newList,
-        })
-      }
-    }
+    setChildrensWishlsit({
+      ...childrensWishlist,
+      [receiverId]: newList,
+    })
   }
 
   const handleDeleteChildWishlistItem = async (childId: string, itemId: string) => {
-    await deleteChildWishlistItemAction({ itemId, childId })
+    await deleteWishlistItemAction({ itemId, receiverId: childId })
 
     const updatedList = childrensWishlist
 
@@ -116,11 +112,19 @@ export function ChildrenSection({ userId }: { userId: UserType["id"] }) {
 
   useEffect(() => {
     startTransition(async () => {
-      const childrens = await fetchChildrensAction({ userId })
+      const childrens = await fetchChildrensPerUserAction({ userId })
       setChildrens(childrens)
 
-      const childWishlist = await fetchChildWishListAction({ userId })
-      setChildrensWishlsit(childWishlist)
+      if(childrens[0]) {
+        let userChildrensWishlist: Record<string, WishlistItemType[]> = {}
+
+        for (let i = 0; i < childrens.length; i++) {
+          const childWishlist = await fetchWishlistAction({ receiverId: childrens[i].id })
+          userChildrensWishlist[childrens[i].id] = childWishlist
+        }
+        
+        setChildrensWishlsit(userChildrensWishlist)
+      }
     })
   }, [])
 
@@ -237,7 +241,7 @@ export function ChildrenSection({ userId }: { userId: UserType["id"] }) {
                                   <div className="flex gap-1">
                                     <EditWishlistItemDialog
                                       item={item}
-                                      child={child}
+                                      receiverId={child.id}
                                       onEdit={handleEditChildWishlistItem}
                                     />
                                     <Button

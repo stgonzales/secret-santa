@@ -4,60 +4,34 @@ import { Sparkles, ExternalLink } from "lucide-react"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
+import { getPriorityColor } from "@/utils"
+import { startTransition, useEffect, useState } from "react"
+import { fetchUserReceiverName } from "@/actions"
+import { UserType, WishlistItemType } from "@/db/schema"
 
-interface WishlistItem {
-  id: string
-  name: string
-  description?: string
-  url?: string
-  priority: "low" | "medium" | "high"
-}
+export function DrawnPersonWishlist({ userId }: { userId: UserType["id"] }) {
+  const [drawnPerson, setDrawnPerson] = useState<{ id: string; name: string } | undefined>()
+  const [wishlist, setWishlist] = useState<Pick<WishlistItemType,  "id" | "name" | "url" | "description" | "priority">[] | undefined>()
 
-export function DrawnPersonWishlist() {
-  // Mock data - in real app this would come from the drawn person
-  const drawnPerson = {
-    name: "Sarah Johnson",
-    initials: "SJ",
-    wishlist: [
-      {
-        id: "1",
-        name: "Yoga Mat",
-        description: "Extra thick, non-slip, purple or teal color",
-        url: "https://example.com/yoga-mat",
-        priority: "high" as const,
-      },
-      {
-        id: "2",
-        name: "Essential Oil Diffuser",
-        description: "Modern design, works with Alexa",
-        priority: "medium" as const,
-      },
-      {
-        id: "3",
-        name: "Cookbook",
-        description: "Mediterranean or Asian cuisine",
-        priority: "low" as const,
-      },
-    ],
-  }
+  useEffect(() => {
+    startTransition(async () => {
+      const receiver = await fetchUserReceiverName(userId)
 
-  const getPriorityColor = (priority: string) => {
-    switch (priority) {
-      case "high":
-        return "bg-primary/10 text-primary border-primary/20"
-      case "medium":
-        return "bg-secondary/10 text-secondary border-secondary/20"
-      default:
-        return "bg-muted text-muted-foreground border-border"
-    }
-  }
+      if(receiver) {
+        setDrawnPerson(receiver[0])
+        setWishlist(receiver[1])
+      }
+    })
+  }, [])
+
+  if(!drawnPerson) return null;
 
   return (
     <Card className="sticky top-24">
       <CardHeader>
         <div className="flex items-center gap-3 mb-2">
           <Avatar className="h-12 w-12 border-2 border-primary/20">
-            <AvatarFallback className="bg-primary/10 text-primary font-semibold">{drawnPerson.initials}</AvatarFallback>
+            <AvatarFallback className="bg-primary/10 text-primary font-semibold">{`${drawnPerson.name.split(" ")[0][0].toUpperCase()} ${drawnPerson.name.split(" ")[1][0].toUpperCase()}`}</AvatarFallback>
           </Avatar>
           <div>
             <CardTitle className="flex items-center gap-2">
@@ -72,7 +46,7 @@ export function DrawnPersonWishlist() {
       </CardHeader>
       <CardContent>
         <div className="space-y-3">
-          {drawnPerson.wishlist.map((item) => (
+          {wishlist && wishlist.map((item) => (
             <div
               key={item.id}
               className="p-4 rounded-lg border border-border bg-card hover:bg-accent/50 transition-colors"

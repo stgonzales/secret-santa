@@ -59,7 +59,14 @@ export function AddChildDialog({ onAdd }: AddChildDialogProps) {
             <div className="grid gap-2">
               <Label htmlFor="child-name">Name *</Label>
               <Input
-                {...register("name")}
+                {...register("firstName")}
+                placeholder="e.g., Emma"
+              />
+            </div>
+            <div className="grid gap-2">
+              <Label htmlFor="child-name">Name *</Label>
+              <Input
+                {...register("lastName")}
                 placeholder="e.g., Emma"
               />
             </div>

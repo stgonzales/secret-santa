@@ -15,3 +15,14 @@ export function getPriorityColor(priority: string) {
       return "bg-muted text-muted-foreground border-border"
   }
 }
+
+export function getCookie(name: string) {
+    const match = document.cookie.match(new RegExp("(^| )" + name + "=([^;]+)"));
+    return match ? decodeURIComponent(match[2]) : null;
+}
+
+export function setCookie(name: string, value: string, days = 7) {
+    document.cookie = `${name}=${encodeURIComponent(value)}; path=/; SameSite=Strict; ${
+        location.protocol === "https:" ? "Secure;" : ""
+    }`;
+};
