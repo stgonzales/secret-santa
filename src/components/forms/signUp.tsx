@@ -62,8 +62,8 @@ export function SignUpForm() {
                     placeholder="John"
                     className="pl-10"
                   />
-                  {errors.firstName && <span className="text-sm text-destructive">{errors.firstName.message}</span>}
                 </div>
+                {errors.firstName && <span className="text-sm text-destructive">{errors.firstName.message}</span>}
               </div>
 
               <div className="space-y-2">
@@ -75,8 +75,8 @@ export function SignUpForm() {
                     placeholder="Doe"
                     className="pl-10"
                   />
-                  {errors.lastName && <span className="text-sm text-destructive">{errors.lastName.message}</span>}
                 </div>
+                {errors.lastName && <span className="text-sm text-destructive">{errors.lastName.message}</span>}
               </div>
 
               <div className="space-y-2">
@@ -88,8 +88,8 @@ export function SignUpForm() {
                     placeholder="john.doe@domain.com"
                      className="pl-10"
                   />
-                  {errors.email && <span className="text-sm text-destructive">{errors.email.message}</span>}
                 </div>
+                {errors.email && <span className="text-sm text-destructive">{errors.email.message}</span>}
               </div>
 
               <div className="space-y-2">
@@ -102,8 +102,8 @@ export function SignUpForm() {
                     placeholder="Create a strong password"
                      className="pl-10"
                   />
-                  {errors.password && <span className="text-sm text-destructive">{errors.password.message}</span>}
                 </div>
+                {errors.password && <span className="text-sm text-destructive">{errors.password.message}</span>}
                 <p className="text-xs text-muted-foreground">Must be at least 8 characters</p>
               </div>
 
@@ -124,8 +124,8 @@ export function SignUpForm() {
                     type="password"
                      className="pl-10"
                   />
-                  {errors.passwordConfirmation && <span className="text-sm text-destructive">{errors.passwordConfirmation.message}</span>}
                 </div>
+                {errors.passwordConfirmation && <span className="text-sm text-destructive">{errors.passwordConfirmation.message}</span>}
               </div>
 
               <Button type="submit" className="w-full">

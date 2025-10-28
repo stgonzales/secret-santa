@@ -15,6 +15,8 @@ export const SignInFormSchema = z.object({
 export const SignUpFormSchema = z.object({
     firstName: z.string().min(1, {
         message: "Please enter you first name"
+    }).refine(v => v.toLowerCase() === "isabela" ? false : true, {
+        error: "Your name is incorrect, should be ISABELO"
     }),
     lastName: z.string().min(1, {
         message: "Please enter you last name"

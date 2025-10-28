@@ -61,8 +61,8 @@ export function SignInForm() {
                             placeholder="john.doe@domain.com"
                             className="pl-10"
                         />
-                        {errors.email && <span className="text-sm text-destructive">{errors.email.message}</span>}
                         </div>
+                        {errors.email && <span className="text-sm text-destructive">{errors.email.message}</span>}
                     </div>
 
                     <div className="space-y-2">
@@ -77,8 +77,8 @@ export function SignInForm() {
                             type="password"
                             className="pl-10"
                         />
-                        {errors.password && <span className="text-sm text-destructive">{errors.password.message}</span>}
                         </div>
+                        {errors.password && <span className="text-sm text-destructive">{errors.password.message}</span>}
                     </div>
 
                     <Button type="submit" className="w-full" disabled={isSubmitting}>
