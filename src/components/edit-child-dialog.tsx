@@ -31,7 +31,8 @@ export function EditChildDialog({ child, onEdit }: EditChildDialogProps) {
   const { handleSubmit, register, reset } = useForm({
     resolver: zodResolver(NewChildrenSchema),
     defaultValues: {
-      name: child.name,
+      firstName: child.name.split(" ")[0],
+      lastName: child.name.split(" ")[1],
       age: child.age.toString(),
     }
   })
@@ -71,7 +72,14 @@ export function EditChildDialog({ child, onEdit }: EditChildDialogProps) {
             <div className="grid gap-2">
               <Label htmlFor="edit-child-name">Name *</Label>
               <Input
-                {...register("name")}
+                {...register("firstName")}
+                placeholder="e.g., Emma"
+              />
+            </div>
+             <div className="grid gap-2">
+              <Label htmlFor="edit-child-name">Name *</Label>
+              <Input
+                {...register("lastName")}
                 placeholder="e.g., Emma"
               />
             </div>
