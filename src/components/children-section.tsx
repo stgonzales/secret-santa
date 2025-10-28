@@ -145,14 +145,14 @@ export function ChildrenSection({ userId }: { userId: UserType["id"] }) {
         </CardHeader>
         <CardContent>
           {childrens.length === 0 ? (
-            <div className="text-center py-12">
+            <div className="text-center py-8 sm:py-12">
               <div className="flex justify-center mb-4">
-                <div className="w-16 h-16 rounded-full bg-muted flex items-center justify-center">
-                  <Users className="w-8 h-8 text-muted-foreground" />
+                <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-full bg-muted flex items-center justify-center">
+                  <Users className="w-7 h-7 sm:w-8 sm:h-8 text-muted-foreground" />
                 </div>
               </div>
-              <p className="text-muted-foreground mb-4">No children added yet</p>
-              {/* <AddChildDialog onAdd={handleAddChild} /> */}
+              <p className="text-sm sm:text-base text-muted-foreground mb-4">No children added yet</p>
+              <AddChildDialog onAdd={handleAddChild} />
             </div>
           ) : (
             <div className="space-y-3">
@@ -163,8 +163,8 @@ export function ChildrenSection({ userId }: { userId: UserType["id"] }) {
                   onOpenChange={() => toggleChild(child.id)}
                 >
                   <div className="rounded-lg border border-border bg-card">
-                    <div className="p-4">
-                      <div className="flex items-center justify-between gap-4">
+                    <div className="p-3 sm:p-4">
+                      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 sm:gap-4">
                         <CollapsibleTrigger className="flex items-center gap-2 flex-1 text-left hover:opacity-70 transition-opacity">
                           {expandedChildren.has(child.id) ? (
                             <ChevronDown className="w-4 h-4 text-muted-foreground" />
@@ -172,18 +172,18 @@ export function ChildrenSection({ userId }: { userId: UserType["id"] }) {
                             <ChevronRight className="w-4 h-4 text-muted-foreground" />
                           )}
                           <div className="flex-1">
-                            <div className="flex items-center gap-2">
-                              <h4 className="font-semibold text-card-foreground">{child.name}</h4>
-                              <Badge variant="outline" className="text-xs">
+                            <div className="flex flex-wrap items-center gap-2">
+                              <h4 className="font-semibold text-sm sm:text-base text-card-foreground">{child.name}</h4>
+                              <Badge variant="outline" className="text-xs sm:text-sm">
                                 Age {child.age}
                               </Badge>
-                              <Badge variant="outline" className="text-xs">
+                              <Badge variant="outline" className="text-xs sm:text-sm">
                                 {childrensWishlist[child.id] ? childrensWishlist[child.id].length : 0} items
                               </Badge>
                             </div>
                           </div>
                         </CollapsibleTrigger>
-                        <div className="flex gap-1">
+                        <div className="flex gap-1 sm:gap-2 w-full sm:w-auto justify-end">
                           <EditChildDialog
                             child={child}
                             onEdit={handleEditChild}
@@ -192,9 +192,9 @@ export function ChildrenSection({ userId }: { userId: UserType["id"] }) {
                             variant="ghost"
                             size="icon"
                             onClick={() => handleDeleteChild(child.id)}
-                            className="h-8 w-8 text-destructive hover:text-destructive"
+                            className="h-7 w-7 sm:h-8 sm:w-8 text-destructive hover:text-destructive"
                           >
-                            <Trash2 className="w-4 h-4" />
+                            <Trash2 className="w-3 h-3 sm:w-4 sm:h-4" />
                             <span className="sr-only">Delete child</span>
                           </Button>
                         </div>
@@ -202,24 +202,24 @@ export function ChildrenSection({ userId }: { userId: UserType["id"] }) {
                     </div>
 
                     <CollapsibleContent>
-                      <div className="px-4 pb-4 pt-0 border-t border-border mt-4">
-                        <div className="flex items-center justify-between mb-3 mt-4">
-                          <h5 className="text-sm font-medium text-muted-foreground">Wishlist</h5>
+                      <div className="px-3 sm:px-4 pb-3 sm:pb-4 pt-0 border-t border-border mt-3 sm:mt-4">
+                        <div className="flex items-center justify-between mb-2 sm:mb-3 mt-3 sm:mt-4">
+                          <h5 className="text-xs sm:text-sm font-medium text-muted-foreground">Wishlist</h5>
                           <AddWishlistItemDialog
                             onAdd={handleAddChildWishlistItem}
                             child={child}
                           />
                         </div>
                         {childrensWishlist[child.id] && childrensWishlist[child.id].length === 0 ? (
-                          <p className="text-sm text-muted-foreground text-center py-4">No wishlist items yet</p>
+                          <p className="text-xs sm:text-sm text-muted-foreground text-center py-3 sm:py-4">No wishlist items yet</p>
                         ) : (
                           <div className="space-y-2">
                             {childrensWishlist[child.id] && childrensWishlist[child.id].map((item) => (
-                              <div key={item.id} className="p-3 rounded-md bg-accent/50 border border-border">
-                                <div className="flex items-start justify-between gap-4">
+                              <div key={item.id} className="p-2 sm:p-3 rounded-md bg-accent/50 border border-border">
+                                <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-2 sm:gap-4">
                                   <div className="flex-1 min-w-0">
-                                    <div className="flex items-center gap-2 mb-1">
-                                      <h6 className="text-sm font-medium text-card-foreground">{item.name}</h6>
+                                    <div className="flex flex-wrap items-center gap-2 mb-1">
+                                      <h6 className="text-xs sm:text-sm font-medium text-card-foreground">{item.name}</h6>
                                       <Badge variant="outline" className={`text-xs ${getPriorityColor(item.priority)}`}>
                                         {item.priority}
                                       </Badge>
@@ -238,7 +238,7 @@ export function ChildrenSection({ userId }: { userId: UserType["id"] }) {
                                       </a>
                                     )}
                                   </div>
-                                  <div className="flex gap-1">
+                                  <div className="flex gap-1 sm:gap-2 justify-end">
                                     <EditWishlistItemDialog
                                       item={item}
                                       receiverId={child.id}
@@ -248,7 +248,7 @@ export function ChildrenSection({ userId }: { userId: UserType["id"] }) {
                                       variant="ghost"
                                       size="icon"
                                       onClick={() => handleDeleteChildWishlistItem(child.id, item.id)}
-                                      className="h-7 w-7 text-destructive hover:text-destructive"
+                                      className="h-6 w-6 sm:h-7 sm:w-7 text-destructive hover:text-destructive"
                                     >
                                       <Trash2 className="w-3 h-3" />
                                       <span className="sr-only">Delete item</span>

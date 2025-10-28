@@ -45,8 +45,8 @@ export function ParticipantsList() {
     return (
         <Card>
             <CardHeader>
-                <CardTitle>Participants & Exclusions</CardTitle>
-                <CardDescription>
+                <CardTitle className="text-base sm:text-lg">Participants & Exclusions</CardTitle>
+                <CardDescription className="text-xs sm:text-sm">
                 Manage who each participant cannot draw. Common exclusions include spouses, family members, or roommates.
                 </CardDescription>
             </CardHeader>
@@ -55,17 +55,17 @@ export function ParticipantsList() {
                 {recipients.map((recipient) => (
                     <div
                         key={recipient.id}
-                        className="flex items-center justify-between p-4 rounded-lg border border-border bg-card hover:bg-accent/50 transition-colors"
+                        className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4 p-3 sm:p-4 rounded-lg border border-border bg-card hover:bg-accent/50 transition-colors"
                     >
-                    <div className="flex items-center gap-4 flex-1">
-                        <Avatar className="h-10 w-10 border-2 border-primary/20">
-                            <AvatarFallback className="bg-primary/10 text-primary font-semibold text-sm">
+                    <div className="flex items-center gap-3 sm:gap-4 flex-1">
+                        <Avatar className="h-8 w-8 sm:h-10 sm:w-10 border-2 border-primary/20">
+                            <AvatarFallback className="bg-primary/10 text-primary font-semibold text-xs sm:text-sm">
                                 {`${recipient.name.split(" ")[0][0].toUpperCase()} `}
                             </AvatarFallback>
                         </Avatar>
                         <div className="flex-1">
                             <div className="flex items-center gap-2 mb-1">
-                                <h4 className="font-semibold text-card-foreground">{recipient.name}</h4>
+                                <h4 className="font-semibold text-sm sm:text-base text-card-foreground">{recipient.name}</h4>
                                 {/* {drawComplete && recipient.drawnPerson && (
                                 <Badge variant="outline" className="bg-secondary/10 text-secondary border-secondary/20">
                                     → {getDrawnPersonName(recipient.drawnPerson)}
@@ -74,7 +74,7 @@ export function ParticipantsList() {
                             </div>
                             {/* <p className="text-sm text-muted-foreground">{recipient.email}</p> */}
                             {excludedUsers[recipient.id] && (
-                                <div className="flex items-center gap-2 mt-2">
+                                <div className="flex items-center gap-1.5 sm:gap-2 mt-1.5 sm:mt-2">
                                 <UserX className="w-3 h-3 text-muted-foreground" />
                                 <p className="text-xs text-muted-foreground">
                                     Cannot draw: {getExcludedNames(recipient.id)}
@@ -84,7 +84,9 @@ export function ParticipantsList() {
                         </div>
                     </div>
                     
-                    <ManageExclusionsDialog recipient={recipient} />
+                    <div className="w-full sm:w-auto flex justify-end">
+                        <ManageExclusionsDialog recipient={recipient} />
+                    </div>
                     </div>
                 ))}
                 </div>

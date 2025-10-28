@@ -72,41 +72,42 @@ export function ManageExclusionsDialog({ recipient }: ManageExclusionsDialogProp
     return (
         <Dialog open={open} onOpenChange={setOpen}>
             <DialogTrigger asChild>
-                <Button variant="outline" size="sm" onClick={() => setOpen(true)} className="gap-2">
-                    <UserX className="w-4 h-4" />
+                <Button variant="outline" size="sm" onClick={() => setOpen(true)} className="gap-1 sm:gap-2 text-xs sm:text-sm">
+                    <UserX className="w-3 h-3 sm:w-4 sm:h-4" />
                     Manage Exclusions
                 </Button>
             </DialogTrigger>
-        <DialogContent className="max-w-md">
+        <DialogContent className="max-w-[calc(100%-2rem)] sm:max-w-md">
             <DialogHeader>
-            <DialogTitle className="flex items-center gap-2">
-                <UserX className="w-5 h-5 text-primary" />
+            <DialogTitle className="flex items-center gap-2 text-base sm:text-lg">
+                <UserX className="w-4 h-4 sm:w-5 sm:h-5 text-primary" />
                 Manage Exclusions for {recipient.name}
             </DialogTitle>
-            <DialogDescription>
+            <DialogDescription className="text-xs sm:text-sm">
                 Select users that {recipient.name} cannot draw. They will not be assigned to each other.
             </DialogDescription>
             </DialogHeader>
 
-            <div className="space-y-3 max-h-[400px] overflow-y-auto py-2">
+            <div className="space-y-2 sm:space-y-3 max-h-[300px] sm:max-h-[400px] overflow-y-auto py-2">
                 {recipients.map((r) => (
                     <div
                         key={r.id}
-                        className="flex items-center gap-3 p-3 rounded-lg border border-border hover:bg-accent/50 transition-colors"
+                        className="flex items-center gap-2 sm:gap-3 p-2 sm:p-3 rounded-lg border border-border hover:bg-accent/50 transition-colors"
                     >
                     <Checkbox
                         id={`exclude-${r.id}`}
                         checked={selectedExclusions[recipient.id] && selectedExclusions[recipient.id].includes(r.id)}
                         onCheckedChange={() => handleToggleExclusion(r.id)}
+                        className="h-4 w-4 sm:h-5 sm:w-5"
                     />
-                    <Label htmlFor={`exclude-${r.id}`} className="flex items-center gap-3 flex-1 cursor-pointer">
-                        <Avatar className="h-8 w-8 border border-border">
+                    <Label htmlFor={`exclude-${r.id}`} className="flex items-center gap-2 sm:gap-3 flex-1 cursor-pointer">
+                        <Avatar className="h-7 w-7 sm:h-8 sm:w-8 border border-border">
                             <AvatarFallback className="bg-muted text-muted-foreground text-xs">
                                 {`${r.name.split(" ")[0][0].toUpperCase()} ${r.name.split(" ")[1] ? r.name.split(" ")[1][0].toUpperCase() : ""}`}
                             </AvatarFallback>
                         </Avatar>
                         <div>
-                            <p className="font-medium text-sm">{r.name}</p>
+                            <p className="font-medium text-xs sm:text-sm">{r.name}</p>
                             {/* <p className="text-xs text-muted-foreground">{u.email}</p> */}
                         </div>
                     </Label>
@@ -114,11 +115,13 @@ export function ManageExclusionsDialog({ recipient }: ManageExclusionsDialogProp
                 ))}
             </div>
 
-            <DialogFooter>
-            <Button variant="outline" onClick={() => setOpen(false)}>
+            <DialogFooter className="gap-2 sm:gap-0">
+            <Button variant="outline" onClick={() => setOpen(false)} className="text-xs sm:text-sm">
                 Cancel
             </Button>
-            <Button onClick={handleSave}>Save Exclusions</Button>
+            <Button onClick={handleSave} className="text-xs sm:text-sm">
+                Save Exclusions
+            </Button>
             </DialogFooter>
         </DialogContent>
         </Dialog>

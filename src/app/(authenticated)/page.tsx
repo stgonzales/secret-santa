@@ -23,21 +23,21 @@ export default async function SecretSantaPage() {
     <div className="min-h-screen bg-background">
       {/* Header */}
       <header className="border-b border-border bg-card/50 backdrop-blur-sm sticky top-0 z-10">
-        <div className="container mx-auto px-4 py-6">
-          <div className="flex items-center justify-between">
+        <div className="container mx-auto px-4 py-3 sm:py-6">
+          <div className="flex flex-col sm:flex-row items-center justify-between gap-3 sm:gap-0">
             <div className="flex items-center gap-3">
-              <div className="flex items-center justify-center w-12 h-12 rounded-xl bg-primary/10">
-                <Gift className="w-6 h-6 text-primary" />
+              <div className="flex items-center justify-center w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-primary/10">
+                <Gift className="w-5 h-5 sm:w-6 sm:h-6 text-primary" />
               </div>
-              <div>
-                <h1 className="text-2xl font-bold text-balance">Secret Santa 2024</h1>
-                <p className="text-sm text-muted-foreground">Manage your holiday gift exchange</p>
+              <div className="text-center sm:text-left">
+                <h1 className="text-xl sm:text-2xl font-bold text-balance">Secret Santa 2024</h1>
+                <p className="text-xs sm:text-sm text-muted-foreground">Manage your holiday gift exchange</p>
               </div>
             </div>
-            <div className="flex gap-3">
+            <div className="flex gap-2 sm:gap-3">
               {session.user.email === env.USER_ADMIN && <Link href="/admin">
-                <Button variant="outline" size="sm" className="gap-2 bg-transparent">
-                  <Settings className="w-4 h-4" />
+                <Button variant="outline" size="sm" className="gap-1 sm:gap-2 bg-transparent text-xs sm:text-sm">
+                  <Settings className="w-3 h-3 sm:w-4 sm:h-4" />
                   Admin
                 </Button>
               </Link>}
@@ -48,10 +48,10 @@ export default async function SecretSantaPage() {
       </header>
 
       {/* Main Content */}
-      <main className="container mx-auto px-4 py-8">
-        <div className="grid gap-8 lg:grid-cols-2">
+      <main className="container mx-auto px-4 py-6 sm:py-8">
+        <div className="grid gap-6 sm:gap-8 lg:grid-cols-2">
           {/* Left Column */}
-          <div className="space-y-8">
+          <div className="space-y-6 sm:space-y-8">
             {env.FEAT_WISHLIST && <MyWishlist userId={session.user.id}/>}
             {env.FEAT_CHILDRENS && <ChildrenSection userId={session.user.id}/>}
           </div>

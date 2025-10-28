@@ -19,8 +19,8 @@ export function SignOut() {
     }
 
     return (
-        <Button variant="outline" size="sm" className="gap-2 bg-transparent" onClick={handleSignOut}>
-            <LogOut className="w-4 h-4" />
+        <Button variant="outline" size="sm" className="gap-1 sm:gap-2 bg-transparent text-xs sm:text-sm" onClick={handleSignOut}>
+            <LogOut className="w-3 h-3 sm:w-4 sm:h-4" />
             Sign Out
         </Button>
     ) 

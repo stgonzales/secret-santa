@@ -116,16 +116,16 @@ export function DrawnPersonWishlist({ userId }: { userId: UserType["id"] }) {
         return (
           <Card key={id}>
             <CardHeader>
-              <div className="flex items-center gap-3 mb-2">
-                <Avatar className="h-12 w-12 border-2 border-primary/20">
-                  <AvatarFallback className="bg-primary/10 text-primary font-semibold">{receiverInitials}</AvatarFallback>
+              <div className="flex items-center gap-2 sm:gap-3 mb-2">
+                <Avatar className="h-10 w-10 sm:h-12 sm:w-12 border-2 border-primary/20">
+                  <AvatarFallback className="bg-primary/10 text-primary text-sm sm:text-base font-semibold">{receiverInitials}</AvatarFallback>
                 </Avatar>
                 <div>
-                  <CardTitle className="flex items-center gap-2">
-                    <Sparkles className="w-5 h-5 text-primary" />
+                  <CardTitle className="flex items-center gap-2 text-base sm:text-lg">
+                    <Sparkles className="w-4 h-4 sm:w-5 sm:h-5 text-primary" />
                     {`${childFirstName}'s Secret Santa Match`}
                   </CardTitle>
-                  <CardDescription className="mt-1">
+                  <CardDescription className="mt-1 text-sm">
                     {`${childFirstName} is buying for`}{" "}
                     <span className="font-semibold text-foreground">{receiverName}</span>
                   </CardDescription>
@@ -137,21 +137,21 @@ export function DrawnPersonWishlist({ userId }: { userId: UserType["id"] }) {
                 {receiverWishlist.map((item) => (
                   <div
                     key={item.id}
-                    className="p-4 rounded-lg border border-border bg-card hover:bg-accent/50 transition-colors"
+                    className="p-3 sm:p-4 rounded-lg border border-border bg-card hover:bg-accent/50 transition-colors"
                   >
-                    <div className="flex items-start justify-between gap-4 mb-2">
-                      <h4 className="font-semibold text-card-foreground flex-1">{item.name}</h4>
-                      <Badge variant="outline" className={getPriorityColor(item.priority)}>
+                    <div className="flex flex-wrap items-center gap-2 mb-2">
+                      <h4 className="font-semibold text-sm sm:text-base text-card-foreground flex-1">{item.name}</h4>
+                      <Badge variant="outline" className={`text-xs sm:text-sm ${getPriorityColor(item.priority)}`}>
                         {item.priority}
                       </Badge>
                     </div>
-                    {item.description && <p className="text-sm text-muted-foreground mb-3">{item.description}</p>}
+                    {item.description && <p className="text-xs sm:text-sm text-muted-foreground mb-2 sm:mb-3">{item.description}</p>}
                     {item.url && (
                       <a
                         href={item.url}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="inline-flex items-center gap-1 text-sm text-primary hover:underline"
+                        className="inline-flex items-center gap-1 text-xs sm:text-sm text-primary hover:underline"
                       >
                         View product
                         <ExternalLink className="w-3 h-3" />
@@ -161,8 +161,8 @@ export function DrawnPersonWishlist({ userId }: { userId: UserType["id"] }) {
                 ))}
               </div>
 
-              <div className="mt-6 p-4 rounded-lg bg-accent/30 border border-border">
-                <p className="text-sm text-muted-foreground leading-relaxed">
+              <div className="mt-4 sm:mt-6 p-3 sm:p-4 rounded-lg bg-accent/30 border border-border">
+                <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed">
                   <span className="font-semibold text-foreground">💡 Tip:</span> Items marked as "high" priority are what they
                   want most. Consider their preferences and budget when choosing!
                 </p>

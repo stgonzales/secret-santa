@@ -33,15 +33,15 @@ export function SignInForm() {
     }
 
     return (
-        <div className="min-h-screen bg-background flex items-center justify-center p-4">
+        <div className="min-h-screen bg-background flex items-center justify-center px-4 py-8 sm:p-4">
             <div className="w-full max-w-md">
                 {/* Logo/Header */}
-                <div className="text-center mb-8">
-                <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-primary/10 mb-4">
-                    <Gift className="w-8 h-8 text-primary" />
+                <div className="text-center mb-6 sm:mb-8">
+                <div className="inline-flex items-center justify-center w-14 h-14 sm:w-16 sm:h-16 rounded-2xl bg-primary/10 mb-4">
+                    <Gift className="w-7 h-7 sm:w-8 sm:h-8 text-primary" />
                 </div>
-                <h1 className="text-3xl font-bold text-balance mb-2">Welcome Back</h1>
-                <p className="text-muted-foreground">Sign in to your Secret Santa account</p>
+                <h1 className="text-2xl sm:text-3xl font-bold text-balance mb-2">Welcome Back</h1>
+                <p className="text-sm sm:text-base text-muted-foreground">Sign in to your Secret Santa account</p>
                 </div>
 
                 {/* Sign In Card */}
