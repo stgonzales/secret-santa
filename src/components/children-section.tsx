@@ -152,7 +152,6 @@ export function ChildrenSection({ userId }: { userId: UserType["id"] }) {
                 </div>
               </div>
               <p className="text-sm sm:text-base text-muted-foreground mb-4">No children added yet</p>
-              <AddChildDialog onAdd={handleAddChild} />
             </div>
           ) : (
             <div className="space-y-3">

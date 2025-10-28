@@ -93,7 +93,6 @@ export function MyWishlist({ userId }: { userId: UserType["id"] }) {
                 </div>
               </div>
               <p className="text-sm sm:text-base text-muted-foreground mb-4">Your wishlist is empty</p>
-              <AddWishlistItemDialog onAdd={handleAddItem} />
             </div>
           ) : (
             <div className="space-y-3">
