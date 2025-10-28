@@ -11,7 +11,7 @@ import { ChildrenType, UserType, WishlistItemType } from "@/db/schema"
 
 export function DrawnPersonWishlist({ userId }: { userId: UserType["id"] }) {
   const [drawnPerson, setDrawnPerson] = useState<{ id: string; name: string } | undefined>();
-  const [childrens, setChildrens] = useState<Record<string, { name: string; wishlist: Pick<WishlistItemType,  "id" | "name" | "url" | "description" | "priority">[]}>[]>([]);
+  const [childrens, setChildrens] = useState<Record<string, { childName: string; receiverName: string; wishlist: Pick<WishlistItemType,  "id" | "name" | "url" | "description" | "priority">[]}>[]>([]);
   const [receiverWishlist, setReceiverWishlist] = useState<Pick<WishlistItemType,  "id" | "name" | "url" | "description" | "priority">[] | undefined>();
 
   useEffect(() => {
@@ -32,8 +32,9 @@ export function DrawnPersonWishlist({ userId }: { userId: UserType["id"] }) {
               setChildrens((c) => [
                 ...c,
                 {
-                  [child.name]: {
-                    name: childReceiver[0].name,
+                  [child.id]: {
+                    childName: child.name,
+                    receiverName: childReceiver[0].name,
                     wishlist: childReceiver[1]
                   }
                 }
@@ -105,13 +106,15 @@ export function DrawnPersonWishlist({ userId }: { userId: UserType["id"] }) {
       </Card>
 
       {childrens.length >= 1 && childrens.map((child) => {
-        const childName = Object.keys(child)[0]
-        const receiverName = child[childName].name
-        const receiverInitials = `${child[childName].name.split(" ")[0][0].toUpperCase()} ${child[childName].name.split(" ")[1][0].toUpperCase()}`
-        const receiverWishlist = child[childName].wishlist
+        const id = Object.keys(child)[0]
+
+        const childFirstName = child[id].childName.split(" ")[0]
+        const receiverName = child[id].receiverName
+        const receiverInitials = `${receiverName.split(" ")[0][0].toUpperCase()} ${receiverName.split(" ")[1][0].toUpperCase()}`
+        const receiverWishlist = child[id].wishlist
 
         return (
-          <Card>
+          <Card key={id}>
             <CardHeader>
               <div className="flex items-center gap-3 mb-2">
                 <Avatar className="h-12 w-12 border-2 border-primary/20">
@@ -120,10 +123,10 @@ export function DrawnPersonWishlist({ userId }: { userId: UserType["id"] }) {
                 <div>
                   <CardTitle className="flex items-center gap-2">
                     <Sparkles className="w-5 h-5 text-primary" />
-                    {`${childName}'s Secret Santa Match`}
+                    {`${childFirstName}'s Secret Santa Match`}
                   </CardTitle>
                   <CardDescription className="mt-1">
-                    {`${childName} is buying for`}{" "}
+                    {`${childFirstName} is buying for`}{" "}
                     <span className="font-semibold text-foreground">{receiverName}</span>
                   </CardDescription>
                 </div>
