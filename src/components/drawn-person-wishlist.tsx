@@ -110,7 +110,7 @@ export function DrawnPersonWishlist({ userId }: { userId: UserType["id"] }) {
 
         const childFirstName = child[id].childName.split(" ")[0]
         const receiverName = child[id].receiverName
-        const receiverInitials = `${receiverName.split(" ")[0][0].toUpperCase()}}`
+        const receiverInitials = `${receiverName.split(" ")[0][0].toUpperCase()}`
         const receiverWishlist = child[id].wishlist
 
         return (
