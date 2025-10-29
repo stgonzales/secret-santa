@@ -17,7 +17,7 @@ export async function fetchWishlistAction({ receiverId }: { receiverId: string }
 export async function addWishlistItemAction({ data }: { data: NewWishlistItemType }) {
   const res =  await db.insert(wishlist).values(data).returning()
 
-  revalidatePath('/')
+  revalidatePath('/', 'layout')
 
   return res
 }
@@ -28,7 +28,7 @@ export async function editWishlistItemAction({ data }: { data: WishlistItemType 
     eq(wishlist.id, data.id)
   )).returning()
 
-  revalidatePath('/')
+  revalidatePath('/', 'layout')
 
   return res
 }
@@ -38,7 +38,7 @@ export async function deleteWishlistItemAction({ itemId, receiverId }: { itemId:
     eq(wishlist.id, itemId),
     eq(wishlist.receiverId, receiverId)
   ))
-  revalidatePath('/')
+  revalidatePath('/', 'layout')
 }
 
 export async function fetchChildrensAction() {
@@ -56,7 +56,7 @@ export async function addChildAction({ data }: { data: NewChildrenType & { userI
     name: `${firstName} ${lastName}`
   }).returning()
 
-  revalidatePath('/')
+  revalidatePath('/', 'layout')
 
   return res
 }
@@ -67,7 +67,7 @@ export async function editChildAction({ childId, data }: { childId: string; data
     eq(children.id, childId)
   )).returning()
 
-  revalidatePath('/')
+  revalidatePath('/', 'layout')
 
   return res
 }
@@ -80,7 +80,7 @@ export async function deleteChildAction({ childId, userId }: { childId: string; 
 
   await db.delete(wishlist).where(eq(wishlist.receiverId, childId))
 
-  revalidatePath('/')
+  revalidatePath('/', 'layout')
 }
 
 export async function fetchUserReceiverName(giverId: string): Promise<[{ id: string; name: string; }, WishlistItemType[]] | undefined> {
@@ -133,8 +133,10 @@ export async function addDrawnNames({
     giverId,
     receiverId,
   })
+  revalidatePath('/', 'layout')
 }
 
 export async function deleteDrawnNames() {
   await db.delete(draws)
+  revalidatePath('/', 'layout')
 }
