@@ -110,7 +110,6 @@ export function DrawnPersonWishlist({ userId }: { userId: UserType["id"] }) {
 
         const childFirstName = child[id].childName.split(" ")[0]
         const receiverName = child[id].receiverName
-        const receiverInitials = `${receiverName.split(" ")[0][0].toUpperCase()} ${receiverName.split(" ")[1][0].toUpperCase()}`
         const receiverWishlist = child[id].wishlist
 
         return (
@@ -118,7 +117,7 @@ export function DrawnPersonWishlist({ userId }: { userId: UserType["id"] }) {
             <CardHeader>
               <div className="flex items-center gap-2 sm:gap-3 mb-2">
                 <Avatar className="h-10 w-10 sm:h-12 sm:w-12 border-2 border-primary/20">
-                  <AvatarFallback className="bg-primary/10 text-primary text-sm sm:text-base font-semibold">{receiverInitials}</AvatarFallback>
+                  <AvatarFallback className="bg-primary/10 text-primary text-sm sm:text-base font-semibold">{receiverName.split(" ")[0][0].toUpperCase()}</AvatarFallback>
                 </Avatar>
                 <div>
                   <CardTitle className="flex items-center gap-2 text-base sm:text-lg">
